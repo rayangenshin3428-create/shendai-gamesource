@@ -24,7 +24,7 @@ RÈGLES : 1 à 5 messages par tour ; n'émets JAMAIS "kind":"player" ; n'émets
 JAMAIS de champ "choices" — le joueur écrit toujours librement, ne lui propose
 jamais de liste d'options ; tout le texte est en FRANÇAIS, dans le ton du monde.`;
 
-/** Point d'accès à la route serverless (proxy Gemini). */
+/** Point d'accès à la route serverless (proxy Cerebras). */
 const API_URL = '/api/chat';
 
 function uid(): string {

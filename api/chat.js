@@ -5,8 +5,8 @@
 // appelle cette route avec { system, messages } et reçoit { text }.
 // ============================================================================
 
-// Modèle Llama 3.3 70B via Cerebras (gratuit, très rapide, inscription par email).
-const MODEL = 'llama-3.3-70b';
+// Modèle Llama 3.1 70B via Cerebras (gratuit, très rapide, inscription par email).
+const MODEL = 'llama-3.1-70b';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

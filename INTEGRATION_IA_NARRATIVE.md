@@ -4,7 +4,7 @@
 
 ---
 
-## 0. ÉTAT : DÉJÀ PRÉ-BRANCHÉ ✅ (Cerebras/Llama 3.3 70B via route serverless `/api/chat`)
+## 0. ÉTAT : DÉJÀ PRÉ-BRANCHÉ ✅ (Cerebras/Llama 3.1 70B via route serverless `/api/chat`)
 
 Le branchement est **déjà fait**, avec la clé **secrète côté serveur** (idéal Vercel).
 
