@@ -6,7 +6,7 @@
 // ============================================================================
 
 // Modèle Gemini Flash (gratuit). Change ici si besoin (ex. 'gemini-1.5-flash').
-const MODEL = 'gemini-1.5-flash';
+const MODEL = 'gemini-2.0-flash';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
