@@ -94,8 +94,11 @@ export class AINarrativeEngine implements NarrativeEngine {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ system: this.system, messages: this.history }),
       });
-      const data = (await r.json()) as { text?: string; error?: string };
-      if (!r.ok || !data.text) throw new Error(data.error || `HTTP ${r.status}`);
+      const data = (await r.json()) as { text?: string; error?: string; detail?: unknown };
+      if (!r.ok || !data.text) {
+        const detail = data.detail ? ` — ${JSON.stringify(data.detail)}` : '';
+        throw new Error((data.error || `HTTP ${r.status}`) + detail);
+      }
       this.history.push({ role: 'assistant', content: data.text });
       res = parse(data.text);
     } catch (err) {
