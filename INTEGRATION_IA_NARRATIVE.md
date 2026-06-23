@@ -4,13 +4,13 @@
 
 ---
 
-## 0. ÉTAT : DÉJÀ PRÉ-BRANCHÉ ✅ (Gemini via route serverless `/api/chat`)
+## 0. ÉTAT : DÉJÀ PRÉ-BRANCHÉ ✅ (Groq/Llama via route serverless `/api/chat`)
 
 Le branchement est **déjà fait**, avec la clé **secrète côté serveur** (idéal Vercel).
 
-- `api/chat.js` — **route serverless** (Vercel) : proxy vers l'API Gemini. Lit la
-  clé dans `process.env.GOOGLE_API_KEY` (jamais exposée au navigateur) et force un
-  JSON strict en sortie.
+- `api/chat.js` — **route serverless** (Vercel) : proxy vers l'API Groq
+  (OpenAI-compatible). Lit la clé dans `process.env.GROQ_API_KEY` (jamais exposée
+  au navigateur) et force un JSON strict en sortie.
 - `src/narrative/AINarrativeEngine.ts` — moteur IA : appelle `/api/chat` (fetch)
   avec le « cerveau » (prompt système + tout le canon, via `getAIPayload()`) +
   l'historique de conversation. En mémoire, **pas de DB**.
@@ -18,14 +18,14 @@ Le branchement est **déjà fait**, avec la clé **secrète côté serveur** (id
   dev local** (override : `VITE_AI_ENABLED=true`).
 - `src/state/game.tsx` — utilise déjà `createEngine()`.
 
-**Pour activer Gemini, il suffit de :**
-1. obtenir une clé sur **https://aistudio.google.com/** (« Get API key », gratuit) ;
-2. la mettre dans **Vercel → Settings → Environment Variables → `GOOGLE_API_KEY`** ;
+**Pour activer l'IA, il suffit de :**
+1. obtenir une clé sur **https://console.groq.com/keys** (gratuit, sans CB) ;
+2. la mettre dans **Vercel → Settings → Environment Variables → `GROQ_API_KEY`** ;
 3. (re)déployer.
 
-Le modèle est dans `api/chat.js` (`MODEL`, `gemini-2.0-flash`) — ajustable.
+Le modèle est dans `api/chat.js` (`MODEL`, `llama-3.3-70b-versatile`) — ajustable.
 En dev local, `npm run dev` n'expose pas `/api/chat` → le jeu utilise le mock ;
-pour tester l'IA en local : `vercel dev` + `GOOGLE_API_KEY` dans `.env.local`.
+pour tester l'IA en local : `vercel dev` + `GROQ_API_KEY` dans `.env.local`.
 
 ---
 
@@ -121,7 +121,7 @@ décor de combat = lieu courant, boss mobiles), et le contrat de sortie ci-dessu
 
 ## 4. Comment ça marche (le code réel est déjà en place)
 
-Flux : **navigateur → `/api/chat` (serverless, clé secrète) → Gemini**.
+Flux : **navigateur → `/api/chat` (serverless, clé secrète) → Groq**.
 Conversation en mémoire côté client, pas de DB. Tout est dans `api/chat.js` et
 `src/narrative/AINarrativeEngine.ts` — rien à réécrire. En bref :
 
@@ -138,13 +138,14 @@ const { text } = await r.json();
 
 ```js
 // api/chat.js (extrait) — la clé ne quitte JAMAIS le serveur
-const apiKey = process.env.GOOGLE_API_KEY;
-// POST …/models/gemini-2.0-flash:generateContent?key=… avec
-// systemInstruction = system, contents = messages, responseMimeType: 'application/json'.
+const apiKey = process.env.GROQ_API_KEY;
+// POST https://api.groq.com/openai/v1/chat/completions avec
+// model: 'llama-3.3-70b-versatile', messages: [{role:'system',...}, ...historique],
+// response_format: { type: 'json_object' }.
 ```
 
 Aucune dépendance npm spéciale côté IA (juste `fetch`). La clé se règle dans
-Vercel (`GOOGLE_API_KEY`). Le parseur tolère le bavardage et retombe en narration
+Vercel (`GROQ_API_KEY`). Le parseur tolère le bavardage et retombe en narration
 brute en cas de souci.
 
 ---

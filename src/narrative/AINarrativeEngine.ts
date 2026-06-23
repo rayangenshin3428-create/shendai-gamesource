@@ -2,8 +2,8 @@ import { getAIPayload } from '../ai';
 import type { Choice, EngineResponse, NarrativeEngine, NarrativeMessage } from './types';
 
 // ============================================================================
-// Moteur narratif IA — appelle la route serverless /api/chat (proxy Gemini).
-// La clé reste SECRÈTE côté serveur (cf. api/chat.js + GOOGLE_API_KEY sur Vercel).
+// Moteur narratif IA — appelle la route serverless /api/chat (proxy Groq).
+// La clé reste SECRÈTE côté serveur (cf. api/chat.js + GROQ_API_KEY sur Vercel).
 // Implémente NarrativeEngine : l'UI ne voit aucune différence avec le mock.
 // Conversation EN MÉMOIRE côté client (aucune DB pour la V1).
 //
