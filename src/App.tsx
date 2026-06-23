@@ -11,7 +11,6 @@ import { BossReveal } from './components/moments/BossReveal';
 import { Interlude } from './components/moments/Interlude';
 import { BossAmbiance } from './components/boss/BossAmbiance';
 import { VolteSpike } from './components/moments/VolteSpike';
-import { DemoControls } from './components/DemoControls';
 import { SettingsMenu } from './components/SettingsMenu';
 import { ConfirmMove } from './components/ConfirmMove';
 import { LaunchScreen } from './components/LaunchScreen';
@@ -67,8 +66,6 @@ export default function App() {
       <DeathScreen />
       <EpilogueScreen />
       <DiscoveryToast />
-
-      <DemoControls />
 
       {/* Seuil d'entrée : lancement puis introduction */}
       <IntroSequence />

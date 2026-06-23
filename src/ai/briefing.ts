@@ -121,9 +121,9 @@ Contrat (interface NarrativeEngine) : chaque réponse = un EngineResponse.
 - messages : liste de { kind, text, speaker?, speakerId? }.
   kind : 'narration' (défaut) | 'npc' (avec speaker + speakerId) |
   'system' (ligne brève, mécanique/dramatique) | 'player' (NE PAS émettre).
-- choices? : 2 à 4 options { id, label, tone? } (tone : calme|tendu|mortel).
-  Des choix qui comptent. Le joueur peut AUSSI répondre librement au clavier :
-  prends sa saisie au sérieux.
+- N'émets JAMAIS de "choices" : le joueur écrit toujours librement au clavier.
+  Prends sa saisie au sérieux et fais-en avancer le récit, sans jamais lui
+  proposer une liste d'options à cliquer.
 - effects? : pour synchroniser fiction et état :
   { type:'threat', level } ; { type:'volte', amount } ;
   { type:'travel', regionId } ; { type:'bossReveal', enemyId } ;

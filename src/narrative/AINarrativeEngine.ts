@@ -1,5 +1,5 @@
 import { getAIPayload } from '../ai';
-import type { Choice, EngineResponse, NarrativeEngine, NarrativeMessage } from './types';
+import type { EngineResponse, NarrativeEngine, NarrativeMessage } from './types';
 
 // ============================================================================
 // Moteur narratif IA — appelle la route serverless /api/chat (proxy Cerebras).
@@ -18,13 +18,11 @@ Tu réponds STRICTEMENT par un seul objet JSON valide, et RIEN d'autre (aucun
 texte autour, pas de balises de code). Forme exacte :
 {
   "messages": [ { "kind": "narration" | "npc" | "system", "text": "…", "speaker"?: "Nom du PNJ", "speakerId"?: "id_codex" } ],
-  "choices"?: [ { "id": "slug-court", "label": "texte du choix", "tone"?: "calme" | "tendu" | "mortel" } ],
   "effects"?: [ { "type": "threat", "level": "calme"|"tendu"|"mortel" } | { "type": "volte", "amount": 0-100 } | { "type": "travel", "regionId": "cotes"|"braise"|"givre"|"luciole"|"lys"|"pilier" } | { "type": "bossReveal", "enemyId": "id" } | { "type": "death" } ]
 }
-RÈGLES : 1 à 5 messages par tour ; n'émets JAMAIS "kind":"player" ; "choices"
-est OPTIONNEL — n'en mets que pour un vrai embranchement (typiquement un boss :
-Affronter / Reculer), sinon laisse le joueur écrire librement ; tout le texte est
-en FRANÇAIS, dans le ton du monde.`;
+RÈGLES : 1 à 5 messages par tour ; n'émets JAMAIS "kind":"player" ; n'émets
+JAMAIS de champ "choices" — le joueur écrit toujours librement, ne lui propose
+jamais de liste d'options ; tout le texte est en FRANÇAIS, dans le ton du monde.`;
 
 /** Point d'accès à la route serverless (proxy Gemini). */
 const API_URL = '/api/chat';
@@ -45,7 +43,6 @@ function parse(raw: string): EngineResponse {
   try {
     const obj = JSON.parse(txt) as {
       messages?: { kind?: string; text?: string; speaker?: string; speakerId?: string }[];
-      choices?: { id?: string; label?: string; tone?: string }[];
       effects?: unknown[];
     };
     const messages: NarrativeMessage[] = (obj.messages ?? [])
@@ -58,16 +55,10 @@ function parse(raw: string): EngineResponse {
         speakerId: m.speakerId,
       }));
     if (messages.length === 0) throw new Error('aucun message');
-    const choices: Choice[] | undefined =
-      Array.isArray(obj.choices) && obj.choices.length
-        ? obj.choices.map((c, i) => ({
-            id: String(c.id ?? `c${i}`),
-            label: String(c.label ?? '—'),
-            tone: c.tone as Choice['tone'],
-          }))
-        : undefined;
     const effects = Array.isArray(obj.effects) ? (obj.effects as EngineResponse['effects']) : undefined;
-    return { messages, choices, effects };
+    // Le joueur écrit toujours librement : on ignore tout "choices" que le
+    // modèle pourrait malgré tout renvoyer (les boutons ne sont plus affichés).
+    return { messages, effects };
   } catch {
     return { messages: [{ id: uid(), kind: 'narration', text: raw.trim() || '…' }] };
   }
@@ -76,7 +67,6 @@ function parse(raw: string): EngineResponse {
 export class AINarrativeEngine implements NarrativeEngine {
   private system: string;
   private history: { role: 'user' | 'assistant'; content: string }[] = [];
-  private lastChoices: Choice[] = [];
 
   constructor() {
     const { briefing, world } = getAIPayload();
@@ -112,7 +102,6 @@ export class AINarrativeEngine implements NarrativeEngine {
         ],
       };
     }
-    this.lastChoices = res.choices ?? [];
     return res;
   }
 
@@ -127,7 +116,8 @@ export class AINarrativeEngine implements NarrativeEngine {
   }
 
   chooseOption(choiceId: string): Promise<EngineResponse> {
-    const chosen = this.lastChoices.find((c) => c.id === choiceId);
-    return this.turn(`[Le joueur choisit : « ${chosen?.label ?? choiceId} »]`);
+    // L'IA n'émet plus jamais de "choices" : ce chemin n'est plus déclenché
+    // depuis l'UI, mais reste requis par l'interface NarrativeEngine.
+    return this.turn(`[Le joueur choisit : « ${choiceId} »]`);
   }
 }
