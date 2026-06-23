@@ -1,0 +1,497 @@
+@import 'tailwindcss';
+
+/* ============================================================================
+   SHENDAÏ — Fondation visuelle
+   « Un manuscrit hanté, pas une application. »
+   Clair-obscur, soie/parchemin vieillis, or terni, sceau rouge, glace + feu.
+   ========================================================================== */
+
+/* ----------------------------------------------------------------------------
+   Tokens animables — déclarés via @property pour des transitions fluides
+   de couleur lors du changement de région (la « bascule de peau »).
+   -------------------------------------------------------------------------- */
+@property --bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #0a0b10;
+}
+@property --bg-2 {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #0e0f16;
+}
+@property --surface {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #15131c;
+}
+@property --surface-2 {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #1d1a26;
+}
+@property --ink {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #2a2733;
+}
+@property --gold {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #b89a5e;
+}
+@property --seal {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #b23a34;
+}
+@property --text {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #e7e0d2;
+}
+@property --text-dim {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #9a93a4;
+}
+@property --glow-warm {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ff7a3c;
+}
+@property --glow-cold {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #7fb6ff;
+}
+@property --accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #d8b06a;
+}
+@property --particle {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffb066;
+}
+@property --particle-2 {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #bfe0ff;
+}
+
+/* ----------------------------------------------------------------------------
+   Pont vers Tailwind v4 : on expose les tokens runtime comme couleurs Tailwind
+   (inline = référence directe à la variable, donc réactive au thème).
+   -------------------------------------------------------------------------- */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-gold: var(--gold);
+  --color-seal: var(--seal);
+  --color-text: var(--text);
+  --color-text-dim: var(--text-dim);
+  --color-glow-warm: var(--glow-warm);
+  --color-glow-cold: var(--glow-cold);
+  --color-accent: var(--accent);
+
+  --font-display: 'Cinzel', serif;
+  --font-heading: 'Cormorant Garamond', serif;
+  --font-body: 'Spectral', Georgia, serif;
+  --font-brush: 'Ma Shan Zheng', cursive;
+}
+
+/* ----------------------------------------------------------------------------
+   THÈME PAR DÉFAUT — « Le Monde » : glace + feu mêlés (la signature).
+   Le noir domine ; la lumière chaude (braise) et froide (givre) coexistent.
+   -------------------------------------------------------------------------- */
+:root,
+[data-theme='monde'] {
+  --bg: #090a10;
+  --bg-2: #0d0f18;
+  --surface: #15131d;
+  --surface-2: #1e1b29;
+  --ink: #2b2838;
+  --gold: #bda063;
+  --seal: #b5362f;
+  --text: #e8e1d3;
+  --text-dim: #9a93a6;
+  --glow-warm: #ff8a4a;
+  --glow-cold: #79b6ff;
+  --accent: #d9b96e;
+  --particle: #ffb066;
+  --particle-2: #b9dcff;
+}
+
+/* EMPIRE DE BRAISE — fournaise oppressante */
+[data-theme='braise'] {
+  --bg: #0f0805;
+  --bg-2: #170a06;
+  --surface: #200f09;
+  --surface-2: #2c160d;
+  --ink: #3a1d11;
+  --gold: #c89046;
+  --seal: #cf3a2a;
+  --text: #f0dccb;
+  --text-dim: #b08a72;
+  --glow-warm: #ff6326;
+  --glow-cold: #6d3a2a;
+  --accent: #e2502a;
+  --particle: #ff7a32;
+  --particle-2: #ffb469;
+}
+
+/* CLOÎTRE DU GIVRE — froid, vide, sacré */
+[data-theme='givre'] {
+  --bg: #060810;
+  --bg-2: #0a0f1a;
+  --surface: #0f1722;
+  --surface-2: #16202e;
+  --ink: #233242;
+  --gold: #9fb6c9;
+  --seal: #7b5560;
+  --text: #e4eefb;
+  --text-dim: #8aa0b6;
+  --glow-warm: #4a5a7a;
+  --glow-cold: #9fd2ff;
+  --accent: #bfe3ff;
+  --particle: #dcefff;
+  --particle-2: #9fc4e8;
+}
+
+/* STEPPES DE LA LUCIOLE — crépuscule, deuil */
+[data-theme='luciole'] {
+  --bg: #080a08;
+  --bg-2: #0c0f0b;
+  --surface: #121710;
+  --surface-2: #1a2016;
+  --ink: #2a3322;
+  --gold: #cdb863;
+  --seal: #9a5a3a;
+  --text: #ece6d2;
+  --text-dim: #93967e;
+  --glow-warm: #d8c46a;
+  --glow-cold: #5a7a6a;
+  --accent: #e6d27a;
+  --particle: #ffe69a;
+  --particle-2: #c6d89a;
+}
+
+/* LYS ROUGE — funèbre, somptueux */
+[data-theme='lys'] {
+  --bg: #0c0507;
+  --bg-2: #14070a;
+  --surface: #1a080d;
+  --surface-2: #260b12;
+  --ink: #3a1019;
+  --gold: #c79a5a;
+  --seal: #d23a44;
+  --text: #f3dbdd;
+  --text-dim: #b07f86;
+  --glow-warm: #e23a4c;
+  --glow-cold: #6a2a3a;
+  --accent: #d23a44;
+  --particle: #ff5c6e;
+  --particle-2: #ffd0c0;
+}
+
+/* CÔTES FOUDROYÉES — l'identité du VOLT, refondue (l'orange abandonné).
+   Direction WLOP : noir graphite, BLANC ÉLECTRIQUE, OR ÉNERGÉTIQUE, et un
+   BLEU ÉLECTRIQUE DISCRET pour le froid. Le rouge ne sert qu'au danger.
+   --accent = or énergétique (la foudre) · --glow-cold = bleu électrique ·
+   --glow-warm = or · --seal = rouge (danger seulement) · --gold = acier. */
+[data-theme='cotes'] {
+  --bg: #06080b;
+  --bg-2: #0a0d12;
+  --surface: #0f1319;
+  --surface-2: #171c24;
+  --ink: #2a313c;
+  --gold: #9aa6b4; /* acier brossé — filets, cadres, lettrines */
+  --seal: #ef5a3a; /* rouge — danger / surtension uniquement */
+  --text: #eef2f7;
+  --text-dim: #93a0b0;
+  --glow-warm: #ffce5e; /* or énergétique — l'arc de l'éclair */
+  --glow-cold: #8fc4ff; /* bleu électrique discret — la brume, le froid */
+  --accent: #f5cf63; /* or énergétique — l'accent du Volt (la foudre) */
+  --particle: #ffe08a; /* étincelles dorées */
+  --particle-2: #9fc8ff; /* volutes bleu électrique */
+}
+
+/* PILIER D'ÂMES — lumière sacrée, vertige (centre du monde) */
+[data-theme='pilier'] {
+  --bg: #040406;
+  --bg-2: #07070c;
+  --surface: #0c0c12;
+  --surface-2: #14141c;
+  --ink: #23232f;
+  --gold: #e6d8b0;
+  --seal: #8a6a5a;
+  --text: #f4eeda;
+  --text-dim: #a8a290;
+  --glow-warm: #f0e6c8;
+  --glow-cold: #cfe2ff;
+  --accent: #f0e6c8;
+  --particle: #fff4d6;
+  --particle-2: #dfeaff;
+}
+
+/* ----------------------------------------------------------------------------
+   La transition cinématographique : quand on voyage, la « peau » du monde fond.
+   -------------------------------------------------------------------------- */
+:root {
+  transition:
+    --bg 800ms ease,
+    --bg-2 800ms ease,
+    --surface 800ms ease,
+    --surface-2 800ms ease,
+    --ink 800ms ease,
+    --gold 800ms ease,
+    --seal 800ms ease,
+    --text 800ms ease,
+    --text-dim 800ms ease,
+    --glow-warm 800ms ease,
+    --glow-cold 800ms ease,
+    --accent 800ms ease,
+    --particle 800ms ease,
+    --particle-2 800ms ease;
+}
+
+/* ----------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+@layer base {
+  * {
+    border-color: color-mix(in oklab, var(--ink) 70%, transparent);
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.65;
+    letter-spacing: 0.005em;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow: hidden; /* l'app gère son propre scroll par panneau */
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 40%, transparent);
+    color: var(--text);
+  }
+
+  /* Barres de défilement discrètes, dans le ton */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--gold) 22%, transparent);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklab, var(--gold) 38%, transparent);
+    background-clip: padding-box;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--gold) 28%, transparent) transparent;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   Utilitaires de matérialité (réutilisables dans tout le projet)
+   -------------------------------------------------------------------------- */
+@layer components {
+  /* Surface « panneau » : soie/laque/parchemin sombre, filet d'or terni. */
+  .panel {
+    position: relative;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--surface-2) 88%, transparent),
+        color-mix(in oklab, var(--surface) 96%, transparent)
+      );
+    border: 1px solid color-mix(in oklab, var(--gold) 16%, var(--ink));
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, var(--gold) 8%, transparent),
+      inset 0 0 40px color-mix(in oklab, #000 55%, transparent),
+      0 18px 40px -24px #000;
+  }
+
+  /* Filet d'or terni en surimpression (cadre noble). */
+  .gold-frame {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--gold) 30%, transparent),
+      inset 0 0 0 3px color-mix(in oklab, var(--bg) 80%, transparent),
+      inset 0 0 0 4px color-mix(in oklab, var(--gold) 12%, transparent);
+  }
+
+  /* Lueur chaude / froide réutilisable */
+  .glow-warm-text {
+    color: var(--glow-warm);
+    text-shadow: 0 0 18px color-mix(in oklab, var(--glow-warm) 55%, transparent);
+  }
+  .glow-cold-text {
+    color: var(--glow-cold);
+    text-shadow: 0 0 18px color-mix(in oklab, var(--glow-cold) 55%, transparent);
+  }
+
+  /* Liseré de braise qui « rampe » quand la scène devient mortelle */
+  .threat-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow: inset 0 0 80px -10px var(--threat-color, transparent);
+    opacity: var(--threat-opacity, 0);
+    transition: opacity 600ms ease;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   Texture & grain — casse le « numérique propre ».
+   -------------------------------------------------------------------------- */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      130% 110% at 50% 38%,
+      transparent 42%,
+      color-mix(in oklab, #000 35%, transparent) 78%,
+      color-mix(in oklab, #000 70%, transparent) 100%
+    );
+}
+
+/* Lavis d'encre / papier usé pour les fonds de panneaux narratifs */
+.parchment {
+  background-image:
+    radial-gradient(
+      120% 80% at 20% 0%,
+      color-mix(in oklab, var(--gold) 5%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      100% 70% at 100% 100%,
+      color-mix(in oklab, var(--seal) 6%, transparent),
+      transparent 55%
+    );
+}
+
+/* ----------------------------------------------------------------------------
+   Animations partagées
+   -------------------------------------------------------------------------- */
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.86;
+  }
+  55% {
+    opacity: 0.94;
+  }
+  70% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-flicker {
+  animation: flicker 4.5s ease-in-out infinite;
+}
+
+/* ----------------------------------------------------------------------------
+   Accessibilité : respect du « mouvement réduit »
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    transition-duration: 1ms;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* Mouvement réduit activé manuellement (réglages) — même effet. */
+[data-reduce-motion='true'] :root,
+[data-reduce-motion='true'] {
+  transition-duration: 1ms;
+}
+[data-reduce-motion='true'] *,
+[data-reduce-motion='true'] *::before,
+[data-reduce-motion='true'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 1ms !important;
+}
+
+/* Grain désactivé via réglages. */
+[data-grain='false'] .grain {
+  display: none;
+}
