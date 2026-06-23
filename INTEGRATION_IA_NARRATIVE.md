@@ -4,12 +4,12 @@
 
 ---
 
-## 0. ÉTAT : DÉJÀ PRÉ-BRANCHÉ ✅ (Cerebras/Llama 3.1 70B via route serverless `/api/chat`)
+## 0. ÉTAT : DÉJÀ PRÉ-BRANCHÉ ✅ (Mistral/Mistral Small via route serverless `/api/chat`)
 
 Le branchement est **déjà fait**, avec la clé **secrète côté serveur** (idéal Vercel).
 
-- `api/chat.js` — **route serverless** (Vercel) : proxy vers l'API Cerebras
-  (OpenAI-compatible). Lit la clé dans `process.env.CEREBRAS_API_KEY` (jamais
+- `api/chat.js` — **route serverless** (Vercel) : proxy vers l'API Mistral
+  (OpenAI-compatible). Lit la clé dans `process.env.MISTRAL_API_KEY` (jamais
   exposée au navigateur) et force un JSON strict en sortie.
 - `src/narrative/AINarrativeEngine.ts` — moteur IA : appelle `/api/chat` (fetch)
   avec le « cerveau » (prompt système + tout le canon, via `getAIPayload()`) +
@@ -19,13 +19,13 @@ Le branchement est **déjà fait**, avec la clé **secrète côté serveur** (id
 - `src/state/game.tsx` — utilise déjà `createEngine()`.
 
 **Pour activer l'IA, il suffit de :**
-1. obtenir une clé sur **https://cloud.cerebras.ai/** (gratuit, sans CB, inscription email) ;
-2. la mettre dans **Vercel → Settings → Environment Variables → `CEREBRAS_API_KEY`** ;
+1. obtenir une clé sur **https://console.mistral.ai/** (gratuit, sans CB, inscription email) ;
+2. la mettre dans **Vercel → Settings → Environment Variables → `MISTRAL_API_KEY`** ;
 3. (re)déployer.
 
-Le modèle est dans `api/chat.js` (`MODEL`, `llama-3.3-70b`) — ajustable.
+Le modèle est dans `api/chat.js` (`MODEL`, `mistral-small-latest`) — ajustable.
 En dev local, `npm run dev` n'expose pas `/api/chat` → le jeu utilise le mock ;
-pour tester l'IA en local : `vercel dev` + `CEREBRAS_API_KEY` dans `.env.local`.
+pour tester l'IA en local : `vercel dev` + `MISTRAL_API_KEY` dans `.env.local`.
 
 ---
 
@@ -121,7 +121,7 @@ décor de combat = lieu courant, boss mobiles), et le contrat de sortie ci-dessu
 
 ## 4. Comment ça marche (le code réel est déjà en place)
 
-Flux : **navigateur → `/api/chat` (serverless, clé secrète) → Cerebras**.
+Flux : **navigateur → `/api/chat` (serverless, clé secrète) → Mistral**.
 Conversation en mémoire côté client, pas de DB. Tout est dans `api/chat.js` et
 `src/narrative/AINarrativeEngine.ts` — rien à réécrire. En bref :
 
@@ -138,14 +138,14 @@ const { text } = await r.json();
 
 ```js
 // api/chat.js (extrait) — la clé ne quitte JAMAIS le serveur
-const apiKey = process.env.CEREBRAS_API_KEY;
-// POST https://api.cerebras.ai/v1/chat/completions avec
-// model: 'llama-3.3-70b', messages: [{role:'system',...}, ...historique],
+const apiKey = process.env.MISTRAL_API_KEY;
+// POST https://api.mistral.ai/v1/chat/completions avec
+// model: 'mistral-small-latest', messages: [{role:'system',...}, ...historique],
 // response_format: { type: 'json_object' }.
 ```
 
 Aucune dépendance npm spéciale côté IA (juste `fetch`). La clé se règle dans
-Vercel (`CEREBRAS_API_KEY`). Le parseur tolère le bavardage et retombe en narration
+Vercel (`MISTRAL_API_KEY`). Le parseur tolère le bavardage et retombe en narration
 brute en cas de souci.
 
 ---
