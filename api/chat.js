@@ -1,12 +1,12 @@
 // ============================================================================
-// api/chat.js — Route serverless (Vercel) : proxy vers l'API Groq (OpenAI-compatible).
-// La clé reste SECRÈTE côté serveur (process.env.GROQ_API_KEY) — jamais
+// api/chat.js — Route serverless (Vercel) : proxy vers l'API Mistral (La Plateforme).
+// La clé reste SECRÈTE côté serveur (process.env.MISTRAL_API_KEY) — jamais
 // exposée au navigateur. Le moteur narratif (src/narrative/AINarrativeEngine.ts)
 // appelle cette route avec { system, messages } et reçoit { text }.
 // ============================================================================
 
-// Modèle Llama 3.3 70B via Groq (gratuit, rapide, sans carte bancaire).
-const MODEL = 'llama-3.3-70b-versatile';
+// Modèle Mistral Small (gratuit sur le tier "Experiment", rapide).
+const MODEL = 'mistral-small-latest';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -14,9 +14,9 @@ export default async function handler(req, res) {
     return;
   }
 
-  const apiKey = process.env.GROQ_API_KEY; // ⚙️ à définir dans Vercel → Settings → Environment Variables
+  const apiKey = process.env.MISTRAL_API_KEY; // ⚙️ à définir dans Vercel → Settings → Environment Variables
   if (!apiKey) {
-    res.status(500).json({ error: 'GROQ_API_KEY manquante côté serveur.' });
+    res.status(500).json({ error: 'MISTRAL_API_KEY manquante côté serveur.' });
     return;
   }
 
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
   };
 
   try {
-    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const r = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ export default async function handler(req, res) {
     const text = data?.choices?.[0]?.message?.content ?? '';
 
     if (!text) {
-      res.status(502).json({ error: 'Réponse vide de Groq.', detail: data?.error ?? null });
+      res.status(502).json({ error: 'Réponse vide de Mistral.', detail: data?.error ?? data?.message ?? null });
       return;
     }
     res.status(200).json({ text });
